@@ -12,7 +12,7 @@ y = np.linspace(0, y_range, points)
 X, Y = np.meshgrid(x, y)
 
 # number_of_particles
-number_of_particles = 2
+number_of_particles = 1
 
 # speed of light
 c = 5
@@ -46,7 +46,6 @@ quiver = ax.quiver(X, Y, np.zeros((points, points)), np.zeros((points, points)),
 x_electric_field = np.zeros((points, points, n_steps))
 y_electric_field = np.zeros((points, points, n_steps))
 
-electric_field = np.zeros((2, points, points, n_steps))
 
 # path of the particle
 
@@ -64,27 +63,21 @@ def oscillation(start, time):
     return start + np.sin(FREQUENCY * time)
 
 
-def sudden_acceleration(start, time):
+def sudden_acceleration(time):
     time_for_acceleration = 10
     if time < time_for_acceleration:
-        return start + time * velocity_y
+        return -10 + time * velocity_y
     if time_for_acceleration < time < time_for_acceleration + 1:
-        return start + velocity_y * time_for_acceleration + 0.05 * time ** 2
+        return -10 + velocity_y * time_for_acceleration + 0.05 * time ** 2
     else:
-        return start + velocity_y * time_for_acceleration + 0.05 * 1 + velocity_y * time
-
-def vec_position(start, time):
-    global FREQUENCY
-    return np.array((particle_x_position(time), particle_y_position(start, time)))
+        return -10 + velocity_y * time_for_acceleration + 0.05 * 1 + velocity_y * time
 
 
 def particles(time):
     return [(particle_x_position(time), particle_y_position(2, time)) for _ in
             range(number_of_particles)]
-
-def vec_particles_positions(time):
-    particle_list = [vec_position(y_range/number_of_particles * n, time) for n in range(number_of_particles)]
-    return np.asarray(particle_list)
+    # return [(particle_x_position(time), particle_y_position(y_range/number_of_particles * n, time))
+    # for n in range(number_of_particles)]
 
 
 # scatter plot for the position of the particle/s
@@ -180,3 +173,4 @@ ani = animation.FuncAnimation(fig, update, fargs=(x_electric_field, y_electric_f
                               repeat=False)
 
 plt.show()
+
